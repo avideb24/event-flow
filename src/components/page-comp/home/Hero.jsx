@@ -1,8 +1,11 @@
 import Link from 'next/link';
 
 export default function Hero() {
+
+  const bgImage = 'https://i.ibb.co/4Z24gK5m/bg.jpg';
+
   return (
-    <section className="relative bg-cover bg-center text-white py-24 px-4" style={{ backgroundImage: "url('/images/stadium-bg.jpg')" }}>
+    <section className="relative bg-cover bg-center text-white py-24 px-4" style={{ backgroundImage: `url(${bgImage})` }}>
       <div className="absolute inset-0 bg-black opacity-60"></div>
       <div className="relative max-w-7xl mx-auto flex flex-col md:flex-row items-center text-center md:text-left">
         {/* Text Content */}
@@ -12,11 +15,6 @@ export default function Hero() {
           <Link href="/events" className="inline-block px-8 py-3 rounded bg-primary text-white font-bold text-lg hover:bg-primary-dark transition-transform transform hover:scale-105 shadow-lg">
             Explore Events
           </Link>
-        </div>
-        
-        {/* Image/Graphic on the right */}
-        <div className="md:w-1/2 mt-8 md:mt-0 flex justify-center">
-            <img src="/images/event-pass-mockup.png" alt="Event Pass" className="w-3/4 md:w-full max-w-sm" />
         </div>
       </div>
     </section>
