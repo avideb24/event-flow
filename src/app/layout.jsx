@@ -3,7 +3,7 @@ import Navbar from "../components/layout/Navbar";
 import Footer from "../components/layout/Footer";
 
 export const metadata = {
-  title: "Event Management",
+  title: "Event Flow",
   description: "Your site description here",
 };
 
