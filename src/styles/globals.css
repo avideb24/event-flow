@@ -1,0 +1,31 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+@font-face {
+  font-family: 'Sporting Grotesque';
+  src: url('../assets/fonts/SportingGrotesque-Regular.otf') format('truetype'),
+       url('../assets/fonts/SportingGrotesque-Bold.otf') format('truetype');
+  font-weight: 200 400 600 700 800;
+  font-style: 400;
+  font-display: swap;
+}
+
+
+body {
+  @apply bg-white dark:bg-dark text-white dark:text-dark font-primary;
+}
+
+
+/* Remove arrows in Chrome, Safari, Edge */
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Remove arrows in Firefox */
+input[type='number'] {
+  -moz-appearance: textfield;
+}
