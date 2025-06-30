@@ -1,5 +1,5 @@
 import React from 'react';
-import img404 from '@/assets/images/404-img.webp'
+import img404 from '@/assets/images/not-found-img.webp'
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -10,7 +10,7 @@ const NotFound = () => {
                 <Image src={img404} className="max-w-[600px] mx-auto" alt="404 Image" />
                 <h1 className="text-2xl font-bold mt-2 mb-6">Your requested page was not found!</h1>
                 <Link href={'/'} className="block text-center">
-                    <button className='button'>Go Home</button>
+                    <button className='px-5 py-2 bg-primary text-white rounded-md'>Go Home</button>
                 </Link>
             </div>
         </div>
