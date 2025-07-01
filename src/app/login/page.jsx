@@ -1,9 +1,11 @@
 "use client";
 
+
 import AuthForm from "../../components/reusuable/AuthForm";
 import { FaSignInAlt } from "react-icons/fa";
 
 export default function LoginPage() {
+
   return (
     <div className="min-h-screen bg-light dark:bg-dark py-12 px-4">
       <div className="max-w-md mx-auto">

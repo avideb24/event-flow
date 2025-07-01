@@ -29,7 +29,7 @@ export default function EventList() {
 
   const handleJoinEvent = (eventId) => {
     // This will be implemented with backend integration
-    console.log(`Joined event: ${eventId}`);
+    // console.log(`Joined event: ${eventId}`);
   };
 
   return (

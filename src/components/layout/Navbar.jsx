@@ -1,13 +1,23 @@
 "use client";
 
 import Link from "next/link";
-import { FaUserCircle, FaBars, FaTimes, FaHome, FaCalendarAlt, FaPlusCircle, FaListAlt, } from "react-icons/fa";
+import {
+  FaUserCircle,
+  FaBars,
+  FaTimes,
+  FaHome,
+  FaCalendarAlt,
+  FaPlusCircle,
+  FaListAlt,
+} from "react-icons/fa";
 import { useState } from "react";
+import { useUser } from "@/provider/UserProvider";
+import Image from "next/image";
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const isLoggedIn = false;
-  const userName = "John Doe";
+
+  const { user, logout } = useUser();
 
   //  nav data
   const navLinks = [
@@ -16,6 +26,8 @@ export default function Navbar() {
     { label: "Add Event", href: "/add-event", icon: <FaPlusCircle /> },
     { label: "My Events", href: "/my-events", icon: <FaListAlt /> },
   ];
+
+  console.log(user);
 
   return (
     <nav className="w-full bg-dark text-light sticky top-0 z-50 shadow-md">
@@ -45,7 +57,7 @@ export default function Navbar() {
 
           {/* Auth Button / Profile Dropdown */}
           <div className="hidden md:block">
-            {!isLoggedIn ? (
+            {!user ? (
               <Link
                 href="/login"
                 className="px-4 py-2 rounded bg-primary text-white font-semibold hover:bg-primary-dark transition-colors"
@@ -54,12 +66,26 @@ export default function Navbar() {
               </Link>
             ) : (
               <div className="relative group">
-                <FaUserCircle className="h-8 w-8 text-primary cursor-pointer" />
-                <div className="absolute right-0 mt-2 w-48 bg-gray-dark border border-gray-light rounded shadow-lg opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition-opacity z-10">
+                {user?.photoUrl ? (
+                  <Image
+                    src={user?.photoUrl}
+                    alt="profile_pic"
+                    className="w-12 h-12 object-cover rounded-full "
+                    width={0}
+                    height={0}
+                  />
+                ) : (
+                  <FaUserCircle className="h-8 w-8 text-primary cursor-pointer" />
+                )}
+
+                <div className="absolute -bottom-[70px] right-0 mt-2 w-48 bg-gray-dark border border-gray-light rounded shadow-lg opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition-opacity z-10">
                   <div className="px-4 py-2 text-sm text-light font-semibold border-b border-gray-light">
-                    {userName}
+                    {user?.name}
                   </div>
-                  <button className="w-full text-left px-4 py-2 text-sm hover:bg-gray-light">
+                  <button
+                    onClick={() => logout()}
+                    className="w-full text-left px-4 py-2 text-sm hover:bg-gray-light"
+                  >
                     Logout
                   </button>
                 </div>
@@ -93,7 +119,7 @@ export default function Navbar() {
               </Link>
             ))}
 
-            {!isLoggedIn ? (
+            {!user ? (
               <Link
                 href="/login"
                 className="mt-4 px-4 py-2 rounded bg-primary text-white font-semibold hover:bg-primary-dark transition-colors"
@@ -102,9 +128,19 @@ export default function Navbar() {
               </Link>
             ) : (
               <div className="mt-4 flex flex-col items-center border-t border-gray-light w-full pt-4">
-                <FaUserCircle className="h-8 w-8 text-primary" />
+                {user?.photoUrl ? (
+                  <Image
+                    src={user?.photoUrl}
+                    alt="profile_pic"
+                    className="w-8 h-8 object-cover rounded-full "
+                    width={0}
+                    height={0}
+                  />
+                ) : (
+                  <FaUserCircle className="h-8 w-8 text-primary cursor-pointer" />
+                )}
                 <div className="pt-2 text-sm text-light font-semibold">
-                  {userName}
+                  {user?.name}
                 </div>
                 <button className="mt-2 w-full text-center py-2 text-sm hover:bg-gray-light">
                   Logout

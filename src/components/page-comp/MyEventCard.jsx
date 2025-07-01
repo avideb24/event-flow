@@ -4,9 +4,16 @@ import { FaMapMarkerAlt, FaCalendarAlt, FaUserAlt, FaUsers } from 'react-icons/f
 import { format } from 'date-fns';
 
 export default function MyEventCard({ event, onUpdate, onDelete }) {
-  const { title, organizer, date, time, location, description, attendeeCount } = event;
+  const { title, name, date_time, location, description, attendee_count } = event;
+  // console.log({event});
 
-  const formattedDate = format(new Date(date), 'MMMM dd, yyyy');
+ const utcDateStr = date_time;
+  const bdDateTime = new Date(utcDateStr).toLocaleString("en-GB", {
+    timeZone: "Asia/Dhaka",
+    hour12: false,
+  });
+  
+  const [date, time] = bdDateTime.split(", ")
 
   return (
     <div className="bg-white dark:bg-gray-dark rounded-lg shadow-md overflow-hidden border border-gray-200 dark:border-gray-700">
@@ -16,12 +23,12 @@ export default function MyEventCard({ event, onUpdate, onDelete }) {
         <div className="space-y-2 mb-4">
           <div className="flex items-center text-gray-600 dark:text-gray-300">
             <FaUserAlt className="mr-2" />
-            <span>{organizer}</span>
+            <span>{name}</span>
           </div>
           
           <div className="flex items-center text-gray-600 dark:text-gray-300">
             <FaCalendarAlt className="mr-2" />
-            <span>{formattedDate} at {time}</span>
+            <span>{date} at {time}</span>
           </div>
           
           <div className="flex items-center text-gray-600 dark:text-gray-300">
@@ -31,7 +38,7 @@ export default function MyEventCard({ event, onUpdate, onDelete }) {
           
           <div className="flex items-center text-gray-600 dark:text-gray-300">
             <FaUsers className="mr-2" />
-            <span>{attendeeCount} Attendees</span>
+            <span>{attendee_count} Attendees</span>
           </div>
         </div>
         

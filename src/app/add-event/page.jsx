@@ -4,6 +4,8 @@ import EventForm from "../../components/page-comp/EventForm";
 import { FaCalendarPlus } from "react-icons/fa";
 
 export default function AddEventPage() {
+  
+
   return (
     <main className="min-h-screen bg-light dark:bg-dark py-12 px-4">
       <div className="max-w-3xl mx-auto">
@@ -20,4 +22,4 @@ export default function AddEventPage() {
       </div>
     </main>
   );
-} 
+}

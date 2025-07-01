@@ -1,106 +1,106 @@
 "use client";
 
-import { useState } from 'react';
+import { useEffect, useState } from "react";
 import EventCard from "../../components/page-comp/EventCard";
-import { FaSearch } from 'react-icons/fa';
-import { startOfToday, startOfWeek, endOfWeek, subWeeks, startOfMonth, endOfMonth, subMonths } from 'date-fns';
-
-// Dummy data for demonstration
-const dummyEvents = [
-  {
-    id: 1,
-    title: "Tech Conference 2024",
-    createdBy: "John Doe",
-    date: "2024-03-15",
-    time: "09:00",
-    location: "Convention Center",
-    description: "Join us for the biggest tech conference of the year. Learn about the latest technologies and network with industry professionals.",
-    attendeeCount: 45,
-    hasJoined: false
-  },
-  // Add more dummy events as needed
-];
+import { FaSearch } from "react-icons/fa";
+import {
+  startOfToday,
+  startOfWeek,
+  endOfWeek,
+  subWeeks,
+  startOfMonth,
+  endOfMonth,
+  subMonths,
+} from "date-fns";
+import { getAllEvents } from "@/lib/events";
 
 export default function EventsPage() {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [dateFilter, setDateFilter] = useState('all');
-  const [customStartDate, setCustomStartDate] = useState('');
-  const [customEndDate, setCustomEndDate] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [dateFilter, setDateFilter] = useState("all");
+  const [customStartDate, setCustomStartDate] = useState("");
+  const [customEndDate, setCustomEndDate] = useState("");
+  const [events, setEvents] = useState([]);
+  const [displayEvents, setDisplayEvents] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  // Filter functions
-  const getDateRange = (filter) => {
-    const today = new Date();
-    switch (filter) {
-      case 'today':
-        return { start: startOfToday(), end: new Date() };
-      case 'currentWeek':
-        return { start: startOfWeek(today), end: endOfWeek(today) };
-      case 'lastWeek':
-        return {
-          start: startOfWeek(subWeeks(today, 1)),
-          end: endOfWeek(subWeeks(today, 1))
-        };
-      case 'currentMonth':
-        return { start: startOfMonth(today), end: endOfMonth(today) };
-      case 'lastMonth':
-        return {
-          start: startOfMonth(subMonths(today, 1)),
-          end: endOfMonth(subMonths(today, 1))
-        };
-      default:
-        return null;
-    }
-  };
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      const res = await getAllEvents();
+      setEvents(res?.data || []);
+      // displayEvents(res?.data || []);
+      setLoading(false);
+    };
 
-  const filterEvents = () => {
-    let filtered = [...dummyEvents];
+    fetchData();
+  }, []);
 
-    // Search filter
+  useEffect(() => {
+    const getDateRange = (filter) => {
+      const today = new Date();
+      switch (filter) {
+        case "today":
+          return {
+            start: new Date(today.setHours(0, 0, 0, 0)),
+            end: new Date(today.setHours(23, 59, 59, 999)),
+          };
+        case "currentWeek":
+          return { start: startOfWeek(today), end: endOfWeek(today) };
+        case "lastWeek":
+          return {
+            start: startOfWeek(subWeeks(today, 1)),
+            end: endOfWeek(subWeeks(today, 1)),
+          };
+        case "currentMonth":
+          return { start: startOfMonth(today), end: endOfMonth(today) };
+        case "lastMonth":
+          return {
+            start: startOfMonth(subMonths(today, 1)),
+            end: endOfMonth(subMonths(today, 1)),
+          };
+        default:
+          return null;
+      }
+    };
+
+    let filtered = [...events];
+
     if (searchTerm) {
-      filtered = filtered.filter(event =>
+      filtered = filtered.filter((event) =>
         event.title.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
-    // Date filter
-    if (dateFilter !== 'all') {
+    if (dateFilter !== "all") {
       const range = getDateRange(dateFilter);
       if (range) {
-        filtered = filtered.filter(event => {
-          const eventDate = new Date(event.date);
+        filtered = filtered.filter((event) => {
+          const eventDate = new Date(event.date_time);
           return eventDate >= range.start && eventDate <= range.end;
         });
       }
     }
 
-    // Custom date range filter
     if (customStartDate && customEndDate) {
-      filtered = filtered.filter(event => {
-        const eventDate = new Date(event.date);
-        return eventDate >= new Date(customStartDate) && eventDate <= new Date(customEndDate);
+      const start = new Date(customStartDate);
+      const end = new Date(customEndDate);
+      filtered = filtered.filter((event) => {
+        const eventDate = new Date(event.date_time);
+        return eventDate >= start && eventDate <= end;
       });
     }
 
-    // Sort by date and time
-    return filtered.sort((a, b) => {
-      const dateA = new Date(`${a.date}T${a.time}`);
-      const dateB = new Date(`${b.date}T${b.time}`);
-      return dateB - dateA;
-    });
-  };
+    // Sort descending by date_time
+    filtered.sort((a, b) => new Date(b.date_time) - new Date(a.date_time));
 
-  const handleJoinEvent = (eventId) => {
-    // This will be implemented with backend integration
-    console.log(`Joined event: ${eventId}`);
-  };
-
-  const filteredEvents = filterEvents();
+    setDisplayEvents(filtered);
+  }, [searchTerm, dateFilter, customStartDate, customEndDate, events]);
 
   return (
     <main className="min-h-screen bg-light dark:bg-dark py-8 px-4">
       <div className="max-w-7xl mx-auto">
-        <h1 className="text-3xl font-bold mb-8">Upcoming Events</h1>
-        
+        <h1 className="text-3xl font-bold mb-8">All Events</h1>
+
         {/* Search and Filter Section */}
         <div className="bg-white dark:bg-gray-dark rounded-xl shadow-lg p-6 mb-8">
           <div className="flex flex-col md:flex-row gap-4 mb-4">
@@ -115,7 +115,7 @@ export default function EventsPage() {
                 className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-transparent"
               />
             </div>
-            
+
             {/* Date Filter */}
             <select
               value={dateFilter}
@@ -148,24 +148,28 @@ export default function EventsPage() {
           </div>
         </div>
 
-        {/* Events Grid */}
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {filteredEvents.map(event => (
-            <EventCard
-              key={event.id}
-              event={event}
-              onJoin={handleJoinEvent}
-            />
-          ))}
-        </div>
+        {loading ? (
+          <div className="py-20 text-center">Loading...</div>
+        ) : (
+          <>
+            {/* Events Grid */}
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {displayEvents.map((event) => (
+                <EventCard key={event._id} event={event} />
+              ))}
+            </div>
 
-        {/* No Results Message */}
-        {filteredEvents.length === 0 && (
-          <div className="text-center py-12">
-            <p className="text-gray-500 dark:text-gray-400">No events found matching your criteria.</p>
-          </div>
+            {/* No Results Message */}
+            {displayEvents.length === 0 && (
+              <div className="text-center py-12">
+                <p className="text-gray-500 dark:text-gray-400">
+                  No events found matching your criteria.
+                </p>
+              </div>
+            )}
+          </>
         )}
       </div>
     </main>
   );
-} 
+}
